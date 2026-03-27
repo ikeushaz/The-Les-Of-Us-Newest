@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Les Of Us — Intro </title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Georgia, serif;
+        color: white;
+        text-align: center;
+        padding: 40px;
+        flex-direction: column;
+    }
+
+    .narrator {
+        font-size: 28px;
+        line-height: 1.6;
+        max-width: 800px;
+        margin-bottom: 60px;
+        opacity: 0;
+        animation: fadeIn 2s ease-in forwards;
+    }
+
+    .next-btn {
+        font-size: 18px;
+        padding: 10px 28px;
+        border: 1px solid white;
+        border-radius: 6px;
+        background: transparent;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+        opacity: 0;
+        animation: fadeIn 2s ease-in forwards;
+        animation-delay: 2s;
+    }
+
+    .next-btn:hover {
+        background: white;
+        color: black;
+    }
+
+    @keyframes fadeIn {
+        to { opacity: 1; }
+    }
+</style>
+</head>
+
+<body>
+    <div class="narrator">
+    Well there goes your 'puki wookie darling honey pie babigirl loss of your life'...<br><br>
+
+    You then  investigate the bleeding on her arm.<br>
+
+    Turns out... there was no bite mark at all. Your girlfriend was telling the truth.<br>
+
+    How do you feel about that you dumbfuck?<br><br>
+
+    You went outside the shack, panicking with guilt. Wish you could've turned back time.<br>
+
+    However, it was too late...
+    </div>
+
+    <button class="next-btn" onclick="goNext()">Next ▶</button>
+
+<script>
+    function goNext() {
+        window.location.href = "game3.html";
+    }
+</script>
+</body>
+</html>

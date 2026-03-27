@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Les Of Us — Scene 2</title>
+
+<style>
+
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+}
+
+/* Background */
+.background {
+    position: fixed;
+    inset: 0;
+    background: url("bg2.jpeg") no-repeat center center;
+    background-size: cover;
+    z-index: -2;
+}
+
+.character {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scale(1);
+    transform-origin: center 30%; /* 👈 focus slightly above center (toward head) */
+    height: 85vh;
+    pointer-events: none;
+    transition: transform 10s ease-in;
+}
+
+/* Panic animation */
+@keyframes panicMove {
+    0%   { transform: translateX(-55%); }
+    25%  { transform: translateX(-45%); }
+    50%  { transform: translateX(-55%); }
+    75%  { transform: translateX(-65%); }
+    100% { transform: translateX(-55%); }
+}
+
+.panic {
+    animation: panicMove 0.6s infinite;
+}
+
+/* Zoom effect */
+.zoom {
+    transform: translateX(-50%) scale(2.2);
+}
+
+/* Fade out */
+.fade-out {
+    opacity: 0;
+    transition: opacity 5s ease;
+}
+
+/* Dialogue box */
+.dialogue-box {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    padding: 25px 40px 35px 40px;
+    box-sizing: border-box;
+}
+
+.name {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #ffd86b;
+}
+
+.text {
+    font-size: 22px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    min-height: 60px;
+}
+
+/* Buttons */
+.next-btn {
+    position: absolute;
+    right: 40px;
+    bottom: 20px;
+    font-size: 16px;
+    padding: 8px 18px;
+    background: white;
+    border: 1px solid white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.next-btn:hover {
+    background: black;
+    color: white;
+}
+
+#choices {
+    display: none;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.choice-btn {
+    font-size: 16px;
+    padding: 10px 20px;
+    background: #ffd86b;
+    border: 1px solid white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.choice-btn:hover {
+    background: #ddd;
+}
+
+.cry:hover {
+    background: black;
+    color: white;
+}
+
+.move:hover {
+    background: black;
+    color: white;
+}
+
+/* Jumpscare overlay */
+#jumpscare {
+    position: fixed;
+    inset: 0;
+    background: black;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+#jumpscare img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#fadeOverlay {
+    position: fixed;
+    inset: 0;
+    background: black;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2s ease;
+    z-index: 1000;
+}
+
+</style>
+</head>
+
+<body>
+<audio id="jumpscareSound" src="jumpscare.mp3" preload="auto"></audio>
+<div class="background"></div>
+<div id="fadeOverlay"></div>
+
+<!-- Character -->
+<img src="Ellisha_panic.png" class="character panic" id="ellisha">
+
+<!-- Jumpscare -->
+<div id="jumpscare">
+    <img src="jumpscare2.gif">
+</div>
+
+<!-- Dialogue -->
+<div class="dialogue-box">
+    <div class="name" id="charName">Ellisha (You)</div>
+
+    <div class="text" id="dialogueText">
+        No no no  FUCK!... this can't be true... what do I even do now...?
+    </div>
+
+    <button class="next-btn" onclick="nextLine()">Next ▶</button>
+
+    <div id="choices">
+        <button class="choice-btn cry" onclick="choose('cry')">KYS</button>
+        <button class="choice-btn move" onclick="choose('move')">Move on</button>
+    </div>
+</div>
+
+<script>
+let stage = 0;
+
+function nextLine() {
+    if (stage === 0) {
+        document.getElementById("dialogueText").innerText =
+            "I have two options for you here dawg... choose wisely.";
+
+        document.getElementById("charName").innerText = "Narrator";
+
+        document.querySelector(".next-btn").style.display = "none";
+        document.getElementById("choices").style.display = "flex";
+
+        stage++;
+    }
+}
+
+function choose(option) {
+    const text = document.getElementById("dialogueText");
+    const img = document.getElementById("ellisha");
+
+    const cryBtn = document.querySelector(".cry");
+    const moveBtn = document.querySelector(".move");
+
+    document.getElementById("choices").style.display = "none";
+
+    if (option === "cry") {
+
+        const jumpscare = document.getElementById("jumpscare");
+        const sound = document.getElementById("jumpscareSound");
+
+        document.getElementById("charName").innerText = "Narrator";
+        text.innerText = "I would add dramatic background music but I'm lazy to import lol.";
+
+        sound.currentTime = 0;
+        sound.play().catch(() => {
+            console.log("Audio blocked or delayed");
+        });
+
+        jumpscare.style.display = "flex";
+
+        setTimeout(() => {
+            jumpscare.style.display = "none";
+            img.src = "Ellisha_dead.png";
+            img.classList.remove("panic");
+
+            setTimeout(() => {
+                img.classList.add("zoom");
+
+                setTimeout(() => {
+                    document.getElementById("fadeOverlay").style.opacity = "1";
+
+                    setTimeout(() => {
+                        window.location.href = "end.html";
+                    }, 2000);
+
+                }, 8000);
+
+            }, 300);
+
+        }, 1000);
+    }
+
+    if (option === "move") {
+
+        // Hide move button
+        moveBtn.style.display = "none";
+
+        // Make cry button slightly bigger
+        cryBtn.style.transform = "scale(1.2)";
+        cryBtn.style.transition = "transform 0.3s ease";
+
+        // Show narrator message
+        document.getElementById("charName").innerText = "Narrator";
+        text.innerHTML = "Oh no no that's NOT the option you deserve to choose.<br>You think I'll let you get away with that?<br><br>Go on... press it.";
+
+        // Show choices again so player can press Cry
+        document.getElementById("choices").style.display = "flex";
+    }
+}
+</script>
+
+</body>
+</html>

@@ -85,13 +85,14 @@
         font-size: 16px;
         padding: 8px 18px;
         background: white;
-        border: none;
+        border: 1px solid white;
         border-radius: 6px;
         cursor: pointer;
     }
 
     .next-btn:hover {
-        background: #ddd;
+        background: black;
+        color: white;
     }
 
     #choices {
@@ -104,8 +105,8 @@
     .choice-btn {
         font-size: 16px;
         padding: 10px 20px;
-        background: white;
-        border: none;
+        background: #ffd86b;
+        border: 1px solid white;
         border-radius: 6px;
         cursor: pointer;
     }
@@ -115,13 +116,38 @@
     }
 
     .shoot:hover {
-        background: #ff4d4d;
+        background: black;
         color: white;
     }
 
     .trust:hover {
-        background: #4caf50;
+        background: black;
         color: white;
+    }
+
+    #jumpscare {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+        z-index: 999;
+    }
+
+    @keyframes floatUp {
+        from {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateY(-120vh);
+            opacity: 0;
+        }
+    }
+
+    .diana-dead {
+        animation: floatUp 3s forwards;
     }
 </style>
 </head>
@@ -129,6 +155,8 @@
 <body>
 
 <div class="background"></div>
+<img src="jumpscare.gif" id="jumpscare">
+<audio id="jumpsound" src="jumpscare.mp3" preload="auto"></audio>
 
 <img src="Ellisha_normal.png" class="character left" id="ellisha">
 <img src="Diana_normal.png" class="character right" id="diana">
@@ -195,22 +223,82 @@ const script = [
 
 ];
 
+const shootScript = [
+    
+    { name: "Ellisha (You)", text: "What have I done...?" }
+];
+
+const trustScript = [
+    { name: "Diana", text: "I knew you wouldn't do it.. I love you, Ellisha." },
+    { name: "Ellisha (You)", text: "I love you too.." },
+    { name: "Diana", text: "Besides, you would've missed our opportunity to raise a family." },
+    { name: "Ellisha (You)", text: "Wait what?" },
+    { name: "Narrator", text: "Diana softly smiles... her gaze went to her stomach and then back to you." },
+    { name: "Diana", text: "I'm pregnant, baby..." },
+];
+
 let index = 0;
+let currentScript = script;
+let endingTriggered = false;
+let endingReadyToExit = false;
 
 function nextLine() {
-    index++;
 
-    if (index < script.length) {
-        document.getElementById("charName").innerText = script[index].name;
-        document.getElementById("dialogueText").innerText = script[index].text;
+    if (endingReadyToExit) {
+        window.location.href = "game2.html";
+        return;
     }
 
-    // change sprite
+    if (currentScript === shootScript && index === currentScript.length - 1) {
+        window.location.href = "game2.html";
+        return;
+    }
+
+    if (currentScript === trustScript && index === currentScript.length - 1 && !endingTriggered) {
+        endingTriggered = true;
+
+        const scare = document.getElementById("jumpscare");
+        const sound = document.getElementById("jumpsound");
+
+        sound.pause();
+        sound.currentTime = 0;
+
+        const playPromise = sound.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(() => {
+                console.log("Audio blocked");
+            });
+        }
+
+        scare.style.display = "block";
+
+        document.getElementById("ellisha").src = "Ellisha_gun.png";
+        document.getElementById("diana").style.opacity = "0.5";
+
+        setTimeout(() => {
+            scare.style.display = "none";
+            document.getElementById("diana").classList.add("diana-dead");
+
+            document.getElementById("charName").innerText = "Narrator";
+            document.getElementById("dialogueText").innerText = "You shot her.";
+            endingReadyToExit = true;
+
+        }, 2000);
+
+        return;
+    }
+
+    index++;
+
+    if (index < currentScript.length) {
+        document.getElementById("charName").innerText = currentScript[index].name;
+        document.getElementById("dialogueText").innerText = currentScript[index].text;
+    }
+
     if (index === 8) {
         document.getElementById("ellisha").src = "Ellisha_gun.png";
     }
 
-    // SHOW CHOICES at last dialogue
     if (index === 9) {
         document.getElementById("choices").style.display = "block";
         document.querySelector(".next-btn").style.display = "none";
@@ -224,6 +312,11 @@ window.onload = function() {
     document.getElementById("diana").classList.add("walk-right");
 };
 
+window.addEventListener("load", () => {
+    const sound = document.getElementById("jumpsound");
+    sound.load(); // helps reduce delay
+});
+
 function choose(option) {
     const name = document.getElementById("charName");
     const text = document.getElementById("dialogueText");
@@ -234,8 +327,23 @@ function choose(option) {
         name.innerText = "Narrator";
         text.innerText = "Your hands tremble... but you pull the trigger. Literally wtf is wrong with you what the hell??";
 
-        // optional: change Diana sprite (dead pose later 👀)
         document.getElementById("diana").style.opacity = "0.5";
+        
+
+        // JUMPSCARE
+        const scare = document.getElementById("jumpscare");
+        const sound = document.getElementById("jumpsound");
+
+        scare.style.display = "block";
+        sound.play();
+
+        setTimeout(() => {
+            scare.style.display = "none";
+            document.getElementById("diana").classList.add("diana-dead");
+        }, 2000);
+
+        currentScript = shootScript;
+        index = -1;
     }
 
     if (option === "trust") {
@@ -244,7 +352,12 @@ function choose(option) {
 
         // optional: lower tension
         document.getElementById("ellisha").src = "Ellisha_normal.png";
+        currentScript = trustScript;
+        index = -1;
     }
+
+    document.querySelector(".next-btn").style.display = "block";
+    
 }
 </script>
 

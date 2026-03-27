@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Les Of Us — Ending </title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Georgia, serif;
+        color: white;
+        text-align: center;
+        padding: 40px;
+        flex-direction: column;
+    }
+
+    .narrator {
+        font-size: 28px;
+        line-height: 1.6;
+        max-width: 800px;
+        margin-bottom: 60px;
+        opacity: 0;
+        animation: fadeIn 2s ease-in forwards;
+    }
+
+    .next-btn {
+        font-size: 18px;
+        padding: 10px 28px;
+        border: 1px solid white;
+        border-radius: 6px;
+        background: transparent;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+        opacity: 0;
+        animation: fadeIn 2s ease-in forwards;
+        animation-delay: 2s;
+    }
+
+    .next-btn:hover {
+        background: white;
+        color: black;
+    }
+
+    @keyframes fadeIn {
+        to { opacity: 1; }
+    }
+</style>
+</head>
+
+<body>
+    <audio id="bgMusic" src="SorryJB.mp3" preload="auto"></audio>
+    <div class="narrator">
+    Thank you for playing!<br><br>
+
+    I apologize if I have offended any TLOU fans in some way, I was just tryna make a trash story cause I was bored lol.<br>
+
+    I also apologize if any part of the content triggered you.<br>
+
+    Do DM me to let me know  what you think of the very amazing visual novel I worked hard on. I really appreciate to know your opinion on it even if it's negative! ^^<br><br>
+
+    </div>
+
+    <button class="next-btn" onclick="goNext()">Music ▶</button>
+
+<script>
+    function goNext() {
+        const music = document.getElementById("bgMusic");
+
+        music.currentTime = 0;
+        music.play().catch(() => {
+            console.log("Audio blocked or failed to play");
+        });
+    }
+</script>
+</body>
+</html>

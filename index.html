@@ -5,68 +5,115 @@
 <title>The Les Of Us</title>
 
 <style>
-    body {
-        margin: 0;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: Arial, Helvetica, sans-serif;
-        color: white;
-        text-align: center;
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    text-align: center;
+    overflow: hidden;
 
-        /* Background Image */
-        background: url("main.png") no-repeat center center fixed;
-        background-size: cover;
-    }
+    /* Background */
+    background: url("main.png") no-repeat center center fixed;
+    background-size: cover;
+}
 
-    /* Dark overlay for readability */
-    body::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.55);
-        z-index: 0;
-    }
+/* Dark + gradient overlay */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        rgba(0,0,0,0.6),
+        rgba(0,0,0,0.8)
+    );
+    z-index: 0;
+}
 
-    .menu {
-        position: relative;
-        z-index: 1;
-        animation: fadeIn 1.2s ease-in-out;
-    }
+/* Subtle texture overlay */
+body::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("https://www.transparenttextures.com/patterns/stardust.png");
+    opacity: 0.15;
+    z-index: 0;
+}
 
-    h1 {
-        font-size: 56px;
-        margin-bottom: 10px;
-        letter-spacing: 2px;
-    }
+/* Menu panel */
+.menu {
+    position: relative;
+    z-index: 1;
+    padding: 40px 60px;
+    border-radius: 16px;
 
-    h2 {
-        font-weight: normal;
-        color: #d0d0ff;
-        margin-bottom: 40px;
-    }
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
 
-    .play-btn {
-        font-size: 22px;
-        padding: 12px 40px;
-        border: none;
-        border-radius: 8px;
-        background-color: #6c63ff;
-        color: white;
-        cursor: pointer;
-        transition: 0.3s;
-    }
+    box-shadow: 0 0 40px rgba(0,0,0,0.6);
+    animation: fadeIn 1.2s ease-in-out;
+}
 
-    .play-btn:hover {
-        background-color: #8a84ff;
-        transform: scale(1.05);
-    }
+/* Title glow animation */
+h1 {
+    font-size: 60px;
+    margin-bottom: 10px;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px rgba(255,0,0,0.6),
+                 0 0 20px rgba(255,0,0,0.4);
+    animation: glow 2.5s infinite alternate;
+}
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(15px); }
-        to { opacity: 1; transform: translateY(0); }
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px rgba(255,0,0,0.5),
+                     0 0 20px rgba(255,0,0,0.3);
     }
+    to {
+        text-shadow: 0 0 20px rgba(255,80,80,0.9),
+                     0 0 40px rgba(255,0,0,0.6);
+    }
+}
+
+h2 {
+    font-weight: normal;
+    color: #ccc;
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+}
+
+/* Play button */
+.play-btn {
+    font-size: 22px;
+    padding: 14px 50px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ff2a2a, #b30000);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 0 15px rgba(255,0,0,0.4);
+}
+
+/* Hover effect */
+.play-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(255,0,0,0.8);
+}
+
+/* Click effect */
+.play-btn:active {
+    transform: scale(0.95);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 </style>
 </head>
 
@@ -78,9 +125,10 @@
     </div>
 
 <script>
-    function startGame() {
-        window.location.href = "intro.html";
-    }
+function startGame() {
+    window.location.href = "intro.html";
+}
 </script>
+
 </body>
 </html>
